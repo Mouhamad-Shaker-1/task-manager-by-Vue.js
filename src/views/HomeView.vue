@@ -43,6 +43,10 @@ body {
   box-sizing: border-box;
 }
 
+#app {
+  height: 100vh;
+}
+
 /* Container styles */
 .container {
   width: 100%;
