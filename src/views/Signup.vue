@@ -57,8 +57,8 @@ const router = useRouter();
 const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
-    const req = await signupUser(formData.value);
-    localStorage.setItem('user', JSON.stringify(req))
+    const res = await signupUser(formData.value);
+    localStorage.setItem('user', JSON.stringify(res))
     router.push("/dashboard")
   } catch (err) {
     error.value = err;
