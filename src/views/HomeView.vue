@@ -1,6 +1,3 @@
-<script setup>
-import HeaderHome from "@/components/HeaderHome.vue";
-</script>
 
 <template>
   <HeaderHome />
@@ -33,6 +30,23 @@ import HeaderHome from "@/components/HeaderHome.vue";
     </div>
   </div>
 </template>
+
+<script setup>
+import HeaderHome from "@/components/HeaderHome.vue";
+import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+
+  const router = useRouter()
+
+  onMounted(() => {
+    // if the user exist send him to dashboard page
+    const user = JSON.parse(localStorage.getItem("user"))
+
+    if(user) {
+      router.push('/dashboard')
+    } 
+  })
+</script>
 
 <style>
 /* Global styles */

@@ -17,7 +17,7 @@
           label="password"
         ></v-text-field>
         <div style="text-align: center">
-          <v-btn type="submit" :disabled="isSubmitting">Signup</v-btn>
+          <v-btn type="submit" :disabled="isSubmitting">Login</v-btn>
           <p style="margin-top: 1em;">
             you don't have an account?
             <RouterLink :to="{ name: 'signup'}"> signup</RouterLink>
