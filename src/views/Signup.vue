@@ -1,35 +1,65 @@
 <template>
   <div class="container-form">
     <form @submit.prevent="handleSubmit">
-      <v-text-field v-model="formData.name" required type="text" label="First name"></v-text-field>
-      <v-text-field v-model="formData.lastName" required type="text" label="Last name"></v-text-field>
-      <v-text-field v-model="formData.email" required type="email" label="email"></v-text-field>
-      <v-text-field v-model="formData.password" required type="password" label="passwored"></v-text-field>
       <div style="text-align: center">
-        <v-btn type="submit">Login</v-btn>
+        <p v-if="error" style="color: red">{{ error }}</p>
+      </div>
+      <v-text-field
+        v-model="formData.name"
+        required
+        type="text"
+        label="First name"
+      ></v-text-field>
+      <v-text-field
+        v-model="formData.lastName"
+        required
+        type="text"
+        label="Last name"
+      ></v-text-field>
+      <v-text-field
+        v-model="formData.email"
+        required
+        type="email"
+        label="email"
+      ></v-text-field>
+      <v-text-field
+        v-model="formData.password"
+        required
+        type="password"
+        label="password"
+      ></v-text-field>
+      <div style="text-align: center">
+        <v-btn type="submit" :disabled="isSubmitting">Signup</v-btn>
       </div>
     </form>
   </div>
 </template>
 
 <script setup>
-    import { ref } from 'vue';
+import { signupUser } from "@/api";
+import { ref } from "vue";
 
-    const formData = ref({
-        name: '',
-        lastName: '',
-        email: '',
-        password: ''
+const formData = ref({
+  name: "",
+  lastName: "",
+  email: "",
+  password: "",
+});
+const error = ref(null);
+const isSubmitting = ref(null);
 
-    })
-
-    const handleSubmit = () => {
-        console.log(formData)
-    }
-    
-
+const handleSubmit = async () => {
+  try {
+    isSubmitting.value = true;
+    const req = await signupUser(formData.value);
+  } catch (err) {
+    error.value = err;
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 </script>
-    
+
 <style>
 form {
   width: 50%;
