@@ -30,6 +30,10 @@
       ></v-text-field>
       <div style="text-align: center">
         <v-btn type="submit" :disabled="isSubmitting">Signup</v-btn>
+        <p style="margin-top: 1em;">
+          you already how an account?
+          <RouterLink :to="{ name: 'login'}"> login</RouterLink>
+        </p>
       </div>
     </form>
   </div>
@@ -38,6 +42,7 @@
 <script setup>
 import { signupUser } from "@/api";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const formData = ref({
   name: "",
@@ -47,11 +52,14 @@ const formData = ref({
 });
 const error = ref(null);
 const isSubmitting = ref(null);
+const router = useRouter();
 
 const handleSubmit = async () => {
   try {
     isSubmitting.value = true;
     const req = await signupUser(formData.value);
+    localStorage.setItem('user', JSON.stringify(req))
+    router.push("/dashboard")
   } catch (err) {
     error.value = err;
   } finally {
