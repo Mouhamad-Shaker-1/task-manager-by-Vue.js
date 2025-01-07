@@ -7,11 +7,46 @@
             </div>
             <v-divider style="margin: 1em 0;"></v-divider>
             <div class="tasks-container">
-
+                <!-- if the req go well -->
+                <div v-if="tasks.length !== 0">
+                    <div v-for="task in tasks" :key="task._id">
+                        <h1>{{ task.name }}</h1>
+                    </div>
+                </div>
+                <!-- when the req not finish yet and there are no error elso -->
+                <div v-if="tasks.length === 0 && error === null">
+                    <Loading />
+                </div>
+                <!-- if there are an error -->
+                <div v-if="error">
+                     <Error :message="error.message" @retry="fetchData" /> 
+                </div>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { getAllTasksFromAPI } from '@/api';
+import Error from '@/components/Error.vue';
+import Loading from '@/components/Loading.vue';
+import { onMounted, ref } from 'vue';
+
+    const tasks = ref([])
+    const error = ref(null)
+
+    const fetchData = async () => {
+        error.value = null
+        try {
+            const res = await getAllTasksFromAPI()
+            tasks.value = res
+        } catch (err) {
+            error.value = err
+        }
+    }
+
+    onMounted(fetchData)
+</script>
 
 <style>
     .container {
@@ -40,6 +75,13 @@
     2- add the header. in the header button for adding the new task
     and the button for logout not making the functionalty yet
     3- call the API to bring the all the tasks make it a function in api.js file
+
+        ***
+            loop in tasks and show them in the page
+            handle the error and the loading 
+            component for laoding and component for error
+        ***
+
     4- add the task component and make it reactive with the data
         in the task component must have button for delete and button for
         update and button an arrow to below to show more infe (description)
