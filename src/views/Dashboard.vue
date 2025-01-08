@@ -6,12 +6,10 @@
                 <v-btn color="red">logout</v-btn>
             </div>
             <v-divider style="margin: 1em 0;"></v-divider>
-            <div class="tasks-container">
+            <div>
                 <!-- if the req go well -->
-                <div v-if="tasks.length !== 0">
-                    <div v-for="task in tasks" :key="task._id">
-                        <h1>{{ task.name }}</h1>
-                    </div>
+                <div v-if="tasks.length !== 0" class="tasks-container">
+                        <Task v-for="task in tasks" :key="task._id" :task="task" />
                 </div>
                 <!-- when the req not finish yet and there are no error elso -->
                 <div v-if="tasks.length === 0 && error === null">
@@ -30,6 +28,7 @@
 import { getAllTasksFromAPI } from '@/api';
 import Error from '@/components/Error.vue';
 import Loading from '@/components/Loading.vue';
+import Task from '@/components/Task.vue';
 import { onMounted, ref } from 'vue';
 
     const tasks = ref([])
@@ -65,6 +64,13 @@ import { onMounted, ref } from 'vue';
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  .tasks-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1em;
   }
 </style>
 
