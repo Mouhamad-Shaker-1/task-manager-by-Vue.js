@@ -3,7 +3,7 @@
         <div class="container-dashboard">
             <div class="dashboard-header">
                 <v-btn>add new task</v-btn>
-                <v-btn color="red">logout</v-btn>
+                <v-btn color="red" @click="logout">logout</v-btn>
             </div>
             <v-divider style="margin: 1em 0;"></v-divider>
             <div>
@@ -30,9 +30,12 @@ import Error from '@/components/Error.vue';
 import Loading from '@/components/Loading.vue';
 import Task from '@/components/Task.vue';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
     const tasks = ref([])
     const error = ref(null)
+
+    const router = useRouter()
 
     const fetchData = async () => {
         error.value = null
@@ -42,6 +45,12 @@ import { onMounted, ref } from 'vue';
         } catch (err) {
             error.value = err
         }
+    }
+
+    const logout = () => {
+        localStorage.removeItem('user')
+
+        router.push('/login')
     }
 
     onMounted(fetchData)
