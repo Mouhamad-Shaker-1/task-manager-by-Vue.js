@@ -3,7 +3,7 @@
     <div class="task-header">
       <p>{{ task.name }}</p>
       <div class="container-buttons">
-        <v-col cols="auto" style="padding: .2em;">
+        <v-col cols="auto" @click="emit('delete-task', task._id)" style="padding: .2em;">
           <v-btn color="red" icon="mdi-delete" size="x-small"></v-btn>
         </v-col>
         <v-col cols="auto" style="padding: .2em;">
@@ -25,6 +25,7 @@ import { ref } from 'vue';
 
 
 defineProps(["task"]);
+const emit = defineEmits(["delete-task"])
 
 const isVisible = ref(false)
 

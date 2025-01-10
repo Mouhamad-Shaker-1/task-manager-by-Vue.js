@@ -48,3 +48,17 @@ export const addNewTask = async (dataTask) => {
     throw new Error(error.message);
   }
 };
+
+export const deleteTaskFromAPI = async (taskID) => {
+  const token = getTokenAndCheckIfUserExist();
+  try {
+    const res = await axios.delete(`${url}/api/v1/tasks/${taskID}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
