@@ -2,7 +2,7 @@
     <div class="container">
         <div class="container-dashboard">
             <div class="dashboard-header">
-                <v-btn>add new task</v-btn>
+                <v-btn @click="toggleDialog">add new task</v-btn>
                 <v-btn color="red" @click="logout">logout</v-btn>
             </div>
             <v-divider style="margin: 1em 0;"></v-divider>
@@ -22,20 +22,74 @@
             </div>
         </div>
     </div>
+
+        <v-dialog
+        v-model="dialog"
+        max-width="600">
+        <form @submit.prevent="handleSubmit" style="width: 100%;">
+            <div v-if="errorDialog" style="text-align: center; color: red;">
+                <p>{{ errorDialog }}</p>
+            </div>
+            <v-text-field
+                type="text"
+                label="name"
+                required
+                v-model="newTaskToAdd.name"
+            ></v-text-field>
+            <v-textarea 
+                type="text"
+                label="description"
+                required
+                v-model="newTaskToAdd.description"
+            ></v-textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <v-btn color="red" @click="toggleDialog">close</v-btn>
+                <v-btn type="submit" :disabled="isSubmitting">add task</v-btn>
+            </div>
+        </form>
+        </v-dialog>
+
+
 </template>
 
 <script setup>
-import { getAllTasksFromAPI } from '@/api';
+import { addNewTask, getAllTasksFromAPI } from '@/api';
 import Error from '@/components/Error.vue';
 import Loading from '@/components/Loading.vue';
 import Task from '@/components/Task.vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-    const tasks = ref([])
-    const error = ref(null)
+const isSubmitting = ref(null)
+const dialog = ref(false)
+const errorDialog = ref(null)
 
-    const router = useRouter()
+const tasks = ref([])
+const error = ref(null)
+const router = useRouter()
+
+const newTaskToAdd = ref({
+    name: '',
+    description: ''
+})
+
+const handleSubmit = async () => {
+    try {
+        isSubmitting.value = true
+        const res = await addNewTask(newTaskToAdd.value)
+        tasks.value.push(res.task)
+        toggleDialog()
+    } catch (err) {
+        isSubmitting.value = false
+        errorDialog.value = err.message
+    }
+}
+
+const toggleDialog = () => {
+    dialog.value = !dialog.value
+}
+
+
 
     const fetchData = async () => {
         error.value = null
@@ -104,4 +158,13 @@ import { useRouter } from 'vue-router';
     6- add the functionalty for logout
     ###
     7- make the adding functionalty (this will be more steps)
+-->
+
+
+<!-- 
+    1- add the dialog that have form to add new task
+    2- handle the toggle dialog
+    3- add the state to take the data from the form
+    4- add the function to send the new task data to API 
+    5- handle the req with the error
 -->
