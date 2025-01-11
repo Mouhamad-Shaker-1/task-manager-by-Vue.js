@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container-dashboard">
       <div class="dashboard-header">
-        <v-btn @click="toggleDialog">add new task</v-btn>
+        <v-btn @click="toggleDialog('add-task')">add new task</v-btn>
         <v-btn color="red" @click="logout">logout</v-btn>
       </div>
       <v-divider style="margin: 1em 0"></v-divider>
@@ -25,6 +25,7 @@
             :key="task._id"
             :task="task"
             @delete-task="deleteTask"
+            @toggle-dialog="toggleDialog"
           />
         </div>
         <div v-else-if="tasks.length === 0">
@@ -35,7 +36,8 @@
   </div>
 
   <v-dialog v-model="dialog" max-width="600">
-    <AddTaskForm @add-task="addNewTask" @toggle-dialog="toggleDialog" />
+    <AddTaskForm v-if="formName === 'add-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
+    <UpdateTaskForm v-if="formName === 'update-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
   </v-dialog>
 </template>
 
@@ -43,6 +45,7 @@
 import { deleteTaskFromAPI, getAllTasksFromAPI } from "@/api";
 import Error from "@/components/Error.vue";
 import AddTaskForm from "@/components/formsComponents/AddTaskForm.vue";
+import UpdateTaskForm from "@/components/formsComponents/UpdateTaskForm.vue";
 import Loading from "@/components/Loading.vue";
 import Task from "@/components/Task.vue";
 import { onMounted, ref } from "vue";
@@ -55,8 +58,13 @@ const errorDelete = ref(null);
 const loading = ref(null)
 const router = useRouter();
 
-const toggleDialog = () => {
+const formName = ref('')
+
+const toggleDialog = (form) => {
   dialog.value = !dialog.value;
+  if(form) {
+    formName.value = form
+  }
 };
 
 const deleteTask = async (taskID) => {
