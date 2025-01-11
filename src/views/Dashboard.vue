@@ -35,58 +35,29 @@
   </div>
 
   <v-dialog v-model="dialog" max-width="600">
-    <form @submit.prevent="handleSubmit" style="width: 100%">
-      <div v-if="errorDialog" style="text-align: center; color: red">
-        <p>{{ errorDialog }}</p>
-      </div>
-      <v-text-field
-        type="text"
-        label="name"
-        required
-        v-model="newTaskToAdd.name"
-      ></v-text-field>
-      <v-textarea
-        type="text"
-        label="description"
-        required
-        v-model="newTaskToAdd.description"
-      ></v-textarea>
-      <div
-        style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <v-btn color="red" @click="toggleDialog">close</v-btn>
-        <v-btn type="submit" :disabled="isSubmitting">add task</v-btn>
-      </div>
-    </form>
+    <AddTaskForm @add-task="addNewTask" @toggle-dialog="toggleDialog" />
   </v-dialog>
 </template>
 
 <script setup>
-import { addNewTask, deleteTaskFromAPI, getAllTasksFromAPI } from "@/api";
+import { deleteTaskFromAPI, getAllTasksFromAPI } from "@/api";
 import Error from "@/components/Error.vue";
+import AddTaskForm from "@/components/formsComponents/AddTaskForm.vue";
 import Loading from "@/components/Loading.vue";
 import Task from "@/components/Task.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
-const isSubmitting = ref(null);
 const dialog = ref(false);
-const errorDialog = ref(null);
-
 const tasks = ref([]);
 const error = ref(null);
 const errorDelete = ref(null);
 const loading = ref(null)
 const router = useRouter();
 
-const newTaskToAdd = ref({
-  name: "",
-  description: "",
-});
+const toggleDialog = () => {
+  dialog.value = !dialog.value;
+};
 
 const deleteTask = async (taskID) => {
   errorDelete.value = null
@@ -98,33 +69,15 @@ const deleteTask = async (taskID) => {
   }
 };
 
-const handleSubmit = async () => {
-  try {
-    isSubmitting.value = true;
-    errorDialog.value = null;
-    const res = await addNewTask(newTaskToAdd.value);
-    tasks.value.push(res.task);
-    isSubmitting.value = false;
-
-    newTaskToAdd.value = {
-      name: "",
-      description: "",
-    };
-    toggleDialog();
-  } catch (err) {
-    isSubmitting.value = false;
-    errorDialog.value = err.message;
-  }
-};
-
-const toggleDialog = () => {
-  dialog.value = !dialog.value;
-};
+const addNewTask = (newTask) => {
+  // this will add the task in the state without recall the API to bring all tasks anther time
+  tasks.value.push(newTask)
+}
 
 const getAllTasks = async () => {
   error.value = null;
+  loading.value = true
   try {
-    loading.value = true
     const res = await getAllTasksFromAPI();
     tasks.value = res;
   } catch (err) {
@@ -209,4 +162,18 @@ onMounted(getAllTasks);
         1- there are problem i noticed when there are no tasks the loading still there
         2- update the task
         3- make the ability to make the task completed
+-->
+
+
+<!-- 
+  update the task
+    1- make the form add task in separate componet with keeping dailog in dashboard
+      For two reasons, one to make the page less complicated and clear
+       and the other to make a condition rendering between form addTask and form updateTask
+    2- adding form updateTask
+    3- add state to know if add or update 
+    4- add new funtion to update the task in API
+    5- add new funtion in dashboard for handle the update task in app
+    6- add event listener for the button to open the form update in dailog
+
 -->
