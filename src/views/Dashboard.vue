@@ -10,8 +10,16 @@
         <p style="text-align: center; color: red" v-if="errorDelete">
           {{ errorDelete }}
         </p>
+        <!-- when the req not finish yet and there are no error elso -->
+        <div v-else-if="loading">
+          <Loading />
+        </div>
+        <!-- if there are an error -->
+        <div v-else-if="error">
+          <Error :message="error.message" @retry="getAllTasks" />
+        </div>
         <!-- if the req go well -->
-        <div v-if="tasks.length !== 0" class="tasks-container">
+        <div v-else-if="tasks.length !== 0" class="tasks-container">
           <Task
             v-for="task in tasks"
             :key="task._id"
@@ -19,13 +27,8 @@
             @delete-task="deleteTask"
           />
         </div>
-        <!-- when the req not finish yet and there are no error elso -->
-        <div v-if="tasks.length === 0 && error === null">
-          <Loading />
-        </div>
-        <!-- if there are an error -->
-        <div v-if="error">
-          <Error :message="error.message" @retry="fetchData" />
+        <div v-else-if="tasks.length === 0">
+          <h1 style="text-align: center;">you don't have tasks</h1>
         </div>
       </div>
     </div>
@@ -77,6 +80,7 @@ const errorDialog = ref(null);
 const tasks = ref([]);
 const error = ref(null);
 const errorDelete = ref(null);
+const loading = ref(null)
 const router = useRouter();
 
 const newTaskToAdd = ref({
@@ -85,6 +89,7 @@ const newTaskToAdd = ref({
 });
 
 const deleteTask = async (taskID) => {
+  errorDelete.value = null
   try {
     const res = await deleteTaskFromAPI(taskID);
     tasks.value = tasks.value.filter((task) => task._id !== res.task._id);
@@ -116,13 +121,16 @@ const toggleDialog = () => {
   dialog.value = !dialog.value;
 };
 
-const fetchData = async () => {
+const getAllTasks = async () => {
   error.value = null;
   try {
+    loading.value = true
     const res = await getAllTasksFromAPI();
     tasks.value = res;
   } catch (err) {
     error.value = err;
+  } finally {
+    loading.value = false
   }
 };
 
@@ -132,7 +140,7 @@ const logout = () => {
   router.push("/login");
 };
 
-onMounted(fetchData);
+onMounted(getAllTasks);
 </script>
 
 <style>
@@ -194,4 +202,11 @@ onMounted(fetchData);
 <!-- 
     1- add the delete function and passed to the Task component
     2- add new function to make delete req from API
+-->
+
+<!-- 
+    next wrok: 
+        1- there are problem i noticed when there are no tasks the loading still there
+        2- update the task
+        3- make the ability to make the task completed
 -->
