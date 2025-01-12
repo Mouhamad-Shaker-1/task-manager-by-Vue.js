@@ -1,7 +1,9 @@
 <template>
-  <div class="task">
+  <div class="task" :style=" {
+    backgroundColor: task.completed === true ? '#25e34e' : '#fff'
+  } ">
     <div class="task-header">
-      <p>{{ task.name }}</p>
+      <p style="cursor: pointer;" @click="emit('complete-task', task._id, task.completed)">{{ task.name }}</p>
       <div class="container-buttons">
         <v-col cols="auto" @click="emit('delete-task', task._id)" style="padding: .2em;">
           <v-btn color="red" icon="mdi-delete" size="x-small"></v-btn>
@@ -14,7 +16,9 @@
         </v-col>
       </div>
     </div>
-    <div class="container-text" v-show="isVisible">
+    <div class="container-text" v-show="isVisible" :style="{
+      borderTopColor: task.completed === true ? '#222' : '#ccc'
+    }" >
         <p>{{task.description}}</p>
     </div>
   </div>
@@ -25,7 +29,7 @@ import { ref } from 'vue';
 
 
 defineProps(["task"]);
-const emit = defineEmits(["delete-task", 'toggle-dialog'])
+const emit = defineEmits(["delete-task", 'toggle-dialog', 'complete-task'])
 
 const isVisible = ref(false)
 
@@ -38,9 +42,8 @@ const toggleVisibility = () => {
 <style>
 .task {
   width: 100%;
-  background-color: #fff;
+  /* background-color: #7dff99; */
   border-radius: 5px;
-
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -53,11 +56,9 @@ const toggleVisibility = () => {
 }
 .container-text { 
   padding: 1em; 
-  background-color: #fff; 
   font-size: 1em; 
-  color: #666;
-  border-top: 1px solid #ccc; 
-  
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 
 .container-buttons {

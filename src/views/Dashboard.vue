@@ -7,11 +7,11 @@
       </div>
       <v-divider style="margin: 1em 0"></v-divider>
       <div>
-        <p style="text-align: center; color: red" v-if="errorDelete">
-          {{ errorDelete }}
+        <p style="text-align: center; color: red" v-if="errorFetch">
+          {{ errorFetch }}
         </p>
         <!-- when the req not finish yet and there are no error elso -->
-        <div v-else-if="loading">
+        <div v-if="loading">
           <Loading />
         </div>
         <!-- if there are an error -->
@@ -26,6 +26,7 @@
             :task="task"
             @delete-task="deleteTask"
             @toggle-dialog="toggleDialog"
+            @complete-task="completeTask"
           />
         </div>
         <div v-else-if="tasks.length === 0">
@@ -42,7 +43,7 @@
 </template>
 
 <script setup>
-import { deleteTaskFromAPI, getAllTasksFromAPI } from "@/api";
+import { deleteTaskFromAPI, getAllTasksFromAPI, UpdateTaskFromAPI } from "@/api";
 import Error from "@/components/Error.vue";
 import AddTaskForm from "@/components/formsComponents/AddTaskForm.vue";
 import UpdateTaskForm from "@/components/formsComponents/UpdateTaskForm.vue";
@@ -54,7 +55,7 @@ import { useRouter } from "vue-router";
 const dialog = ref(false);
 const tasks = ref([]);
 const error = ref(null);
-const errorDelete = ref(null);
+const errorFetch = ref(null);
 const loading = ref(null)
 const router = useRouter();
 
@@ -79,12 +80,12 @@ const toggleDialog = (formName, id) => {
 };
 
 const deleteTask = async (taskID) => {
-  errorDelete.value = null
+  errorFetch.value = null
   try {
     const res = await deleteTaskFromAPI(taskID);
     tasks.value = tasks.value.filter((task) => task._id !== res.task._id);
   } catch (err) {
-    errorDelete.value = err.message;
+    errorFetch.value = err.message;
   }
 };
 
@@ -96,6 +97,16 @@ const addNewTask = (newTask) => {
 const updateTask = (task) => {
   // this will update the task in the stae without recall the API to bring all tasks anther time
   tasks.value = tasks.value.map(t => t._id === task._id ? task : t)
+}
+
+const completeTask = async (taskID, completed) => {
+  errorFetch.value = null
+  try {
+    const task = await UpdateTaskFromAPI({completed: !completed}, taskID)
+    tasks.value = tasks.value.map(t => t._id === task._id ? task : t)
+  } catch (err) {
+    errorFetch.value = err.message;
+  }
 }
 
 const getAllTasks = async () => {
