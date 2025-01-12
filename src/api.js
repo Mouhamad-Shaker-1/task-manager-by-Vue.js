@@ -76,3 +76,17 @@ export const getOneTaskFromAPI = async (taskID) => {
     throw new Error(error.message);
   }
 };
+
+export const UpdateTaskFromAPI = async (dataTask, taskID) => {
+  const token = getTokenAndCheckIfUserExist();
+  try {
+    const res = await axios.patch(`${url}/api/v1/tasks/${taskID}`, dataTask, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

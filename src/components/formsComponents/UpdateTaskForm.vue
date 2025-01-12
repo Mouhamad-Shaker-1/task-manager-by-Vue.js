@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent="handleSubmit" style="width: 100%">
-    <!-- <div v-if="error" style="text-align: center; color: red">
-      <p>{{ error.message }}</p>
-    </div> -->
+    <div v-if="errorSubmit" style="text-align: center; color: red">
+      <p>{{ errorSubmit.message }}</p>
+    </div>
     <Error v-if="error" :message="error.message" @retry="getOneTask" />
     <div v-else>
       <v-text-field
@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { getOneTaskFromAPI } from "@/api";
+import { getOneTaskFromAPI, UpdateTaskFromAPI } from "@/api";
 import { onMounted, ref } from "vue";
 import Error from "../Error.vue";
 const props = defineProps(["taskID"]);
@@ -44,26 +44,27 @@ const props = defineProps(["taskID"]);
 const loading = ref(false);
 const isSubmitting = ref(false);
 const error = ref("");
+const errorSubmit = ref("")
 const task = ref({
   name: "",
   description: "",
 });
 
-const emit = defineEmits(["add-task", "toggle-dialog"]);
+const emit = defineEmits(["update-task", "toggle-dialog"]);
 
 const handleSubmit = async () => {
   isSubmitting.value = true;
-  error.value = null;
+  errorSubmit.value = null;
   try {
-    const res = await addNewTask(task.value);
+    const taskFromAPI = await UpdateTaskFromAPI(task.value, props.taskID);
     task.value = {
       name: "",
       description: "",
     };
-    emit("add-task", res.task);
+    emit("update-task", taskFromAPI);
     emit("toggle-dialog");
   } catch (err) {
-    error.value = err;
+    errorSubmit.value = err;
   } finally {
     isSubmitting.value = false;
   }

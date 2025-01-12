@@ -37,7 +37,7 @@
 
   <v-dialog v-model="dialog" max-width="600">
     <AddTaskForm v-if="form.name === 'add-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
-    <UpdateTaskForm v-if="form.name === 'update-task'" :taskID="form.taskID" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
+    <UpdateTaskForm v-if="form.name === 'update-task'" :taskID="form.taskID" @update-task="updateTask" @toggle-dialog="toggleDialog" />
   </v-dialog>
 </template>
 
@@ -91,6 +91,11 @@ const deleteTask = async (taskID) => {
 const addNewTask = (newTask) => {
   // this will add the task in the state without recall the API to bring all tasks anther time
   tasks.value.push(newTask)
+}
+
+const updateTask = (task) => {
+  // this will update the task in the stae without recall the API to bring all tasks anther time
+  tasks.value = tasks.value.map(t => t._id === task._id ? task : t)
 }
 
 const getAllTasks = async () => {
