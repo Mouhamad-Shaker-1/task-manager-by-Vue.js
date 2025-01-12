@@ -67,6 +67,11 @@
     justify-content: center;
     align-items: center;
   }
+  @media (max-width: 720px) {
+  form {
+    width: 90%;
+  }
+}
   </style>
   
   <!-- 

@@ -68,20 +68,6 @@ const handleSubmit = async () => {
 };
 </script>
 
-<style>
-form {
-  width: 50%;
-  padding: 1.5em;
-  background-color: #eee;
-  border-radius: 10px;
-}
-.container-form {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
 
 <!-- 
 

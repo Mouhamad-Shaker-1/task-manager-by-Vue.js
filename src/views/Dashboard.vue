@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container-dashboard">
       <div class="dashboard-header">
-        <v-btn @click="toggleDialog('add-task')">add new task</v-btn>
+        <v-btn @click="toggleDialog('add-task')">add task</v-btn>
         <v-btn color="red" @click="logout">logout</v-btn>
       </div>
       <v-divider style="margin: 1em 0"></v-divider>
@@ -132,6 +132,11 @@ onMounted(getAllTasks);
   padding: 1.5em;
   background-color: #eee;
   border-radius: 10px;
+}
+@media (max-width: 720px) {
+  .container-dashboard {
+    width: 90%;
+  }
 }
 .dashboard-header {
   display: flex;
