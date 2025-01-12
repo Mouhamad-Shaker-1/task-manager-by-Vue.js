@@ -6,7 +6,7 @@
         <v-col cols="auto" @click="emit('delete-task', task._id)" style="padding: .2em;">
           <v-btn color="red" icon="mdi-delete" size="x-small"></v-btn>
         </v-col>
-        <v-col cols="auto" @click="emit('toggle-dialog', 'update-task')" style="padding: .2em;">
+        <v-col cols="auto" @click="emit('toggle-dialog', 'update-task', task._id)" style="padding: .2em;">
           <v-btn color="blue" icon="mdi-update" size="x-small"></v-btn>
         </v-col>
         <v-col cols="auto" @click="toggleVisibility" style="padding: .2em;">

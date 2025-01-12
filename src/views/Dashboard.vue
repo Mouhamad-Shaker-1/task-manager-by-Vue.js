@@ -36,8 +36,8 @@
   </div>
 
   <v-dialog v-model="dialog" max-width="600">
-    <AddTaskForm v-if="formName === 'add-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
-    <UpdateTaskForm v-if="formName === 'update-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
+    <AddTaskForm v-if="form.name === 'add-task'" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
+    <UpdateTaskForm v-if="form.name === 'update-task'" :taskID="form.taskID" @add-task="addNewTask" @toggle-dialog="toggleDialog" />
   </v-dialog>
 </template>
 
@@ -58,12 +58,23 @@ const errorDelete = ref(null);
 const loading = ref(null)
 const router = useRouter();
 
-const formName = ref('')
+// the taskID to know which task will be update
+// name to know which form will be render
+const form = ref({
+  name: '',
+  taskID: ''
+})
 
-const toggleDialog = (form) => {
+const toggleDialog = (formName, id) => {
   dialog.value = !dialog.value;
-  if(form) {
-    formName.value = form
+  // if the we need to update form open must pass id for handle the update
+  if(formName === 'add-task') {
+    form.value.name = formName
+  } else if (formName === 'update-task') {
+    form.value = {
+      name: formName,
+      taskID: id
+    }
   }
 };
 
@@ -179,9 +190,9 @@ onMounted(getAllTasks);
       For two reasons, one to make the page less complicated and clear
        and the other to make a condition rendering between form addTask and form updateTask
     2- adding form updateTask
-    3- add state to know if add or update 
-    4- add new funtion to update the task in API
-    5- add new funtion in dashboard for handle the update task in app
-    6- add event listener for the button to open the form update in dailog
+    3- add event listener for the button to open the form update in dailog
+    4- add state to know if add or update 
+
+    add new funtion in dashboard for handle the update task in app
 
 -->
